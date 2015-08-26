@@ -1,0 +1,56 @@
+---
+
+- name: plugins | fetch
+  sudo: no
+  get_url:
+    url: "{{ nagios_server_plugins_src_url }}"
+    dest: "{{ __nagios_server_plugins_src_tarball_name }}"
+    sha256sum: "{{ nagios_server_plugins_src_sha256 }}"
+  tags:
+    - nagios
+    - plugins
+    - fetch
+
+- name: plugins | extract
+  sudo: no
+  command: >-
+    tar xf {{ __nagios_server_plugins_src_tarball_name }}
+  args:
+    creates: "{{ __nagios_server_plugins_src_dir }}"
+  tags:
+    - nagios
+    - plugins
+    - extrace
+
+- name: plugins | configure
+  sudo: no
+  command: >-
+    ./configure \
+      --with-nagios-user={{ nagios_server_user }} \
+      --with-nagios-group={{ nagios_server_user }} \
+      --with-openssl
+  args:
+    chdir: "{{ __nagios_server_plugins_src_dir }}"
+  tags:
+    - nagios
+    - plugins
+    - configure
+
+- name: plugins | build
+  sudo: no
+  command: make
+  args:
+    chdir: "{{ __nagios_server_plugins_src_dir }}"
+  tags:
+    - nagios
+    - plugins
+    - build
+
+- name: plugins | install
+  command: make install
+  args:
+    chdir: "{{ __nagios_server_plugins_src_dir }}"
+  tags:
+    - nagios
+    - plugins
+    - install
