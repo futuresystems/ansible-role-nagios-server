@@ -1,8 +1,13 @@
 ---
 
+#section: network
+nagios_server_address: "{{ ansible_default_ipv4.address }}"
+
+#section: users
 nagios_server_user: nagios
 nagios_server_group: nagcmd
 
+#section: core
 nagios_server_core_src_url:
   "https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.1.1.tar.gz"
 nagios_server_core_src_sha256:
@@ -13,4 +18,29 @@ __nagios_server_core_src_tarball_name:
 __nagios_server_core_src_dir:
   "{{ __nagios_server_core_src_tarball_name.rstrip('.tar.gz') }}"
 
-nagios_server_core_build_directory: nagios_build
+nagios_server_core_webconf_path:
+  /etc/apache2/sites-available/nagios.conf
+
+#section: plugins
+nagios_server_plugins_src_url:
+  "http://nagios-plugins.org/download/nagios-plugins-2.1.1.tar.gz"
+nagios_server_plugins_src_sha256:
+  c7daf95ecbf6909724258e55a319057b78dcca23b2a6cc0a640b90c90d4feae3
+
+__nagios_server_plugins_src_tarball_name:
+  "{{ ansible_env.PWD }}/{{ nagios_server_plugins_src_url | basename }}"
+__nagios_server_plugins_src_dir:
+  "{{ __nagios_server_plugins_src_tarball_name.rstrip('.tar.gz') }}"
+
+#section: nrpe (Nagios Remote Plugin Executor)
+nagios_server_nrpe_src_url:
+  "http://downloads.sourceforge.net/project/nagios/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz"
+nagios_server_nrpe_src_sha256:
+  66383b7d367de25ba031d37762d83e2b55de010c573009c6f58270b137131072
+
+__nagios_server_nrpe_src_tarball_name:
+  "{{ ansible_env.PWD }}/{{ nagios_server_nrpe_src_url | basename }}"
+__nagios_server_nrpe_src_dir:
+  "{{ __nagios_server_nrpe_src_tarball_name.rstrip('.tar.gz') }}"
+
+nagios_server_nrpe_xinetd_conf: /etc/xinetd.d/nrpe
