@@ -1,0 +1,75 @@
+---
+
+- name: nrpe | fetch
+  sudo: no
+  get_url:
+    url: "{{ nagios_server_nrpe_src_url }}"
+    dest: "{{ __nagios_server_nrpe_src_tarball_name }}"
+    sha256sum: "{{ nagios_server_nrpe_src_sha256 }}"
+  tags:
+    - nagios
+    - nrpe
+    - fetch
+
+- name: nrpe | extract
+  sudo: no
+  command: >-
+    tar xf {{ __nagios_server_nrpe_src_tarball_name }}
+  args:
+    creates: "{{ __nagios_server_nrpe_src_dir }}"
+  tags:
+    - nagios
+    - nrpe
+    - extrace
+
+- name: nrpe | configure
+  sudo: no
+  shell: >-
+    ./configure \
+      --enable-command-args \
+      --with-nagios-user={{ nagios_server_user }} \
+      --with-nagios-group={{ nagios_server_user }} \
+      --with-ssl=$(pkg-config openssl --variable=prefix)/bin/openssl \
+      --with-ssl-lib=$(pkg-config openssl --variable=libdir)
+  args:
+    chdir: "{{ __nagios_server_nrpe_src_dir }}"
+  tags:
+    - nagios
+    - nrpe
+    - configure
+
+- name: nrpe | build
+  sudo: no
+  command: make all
+  args:
+    chdir: "{{ __nagios_server_nrpe_src_dir }}"
+  tags:
+    - nagios
+    - nrpe
+    - build
+
+- name: nrpe | install
+  command: make "{{ item }}"
+  args:
+    chdir: "{{ __nagios_server_nrpe_src_dir }}"
+  with_items:
+    - install
+    - install-xinetd
+    - install-daemon-config
+  tags:
+    - nagios
+    - nrpe
+    - install
+
+- name: nrpe | xinetd | configure
+  lineinfile:
+    dest: "{{ nagios_server_nrpe_xinetd_conf }}"
+    regexp: '([ \t]*only_from[ \t]*=[ \t]127\.0\.0\.1).*'
+    backrefs: yes
+    line: '\1 {{ nagios_server_address }}'
+  notify: restart xinetd
+  tags:
+    - nagios
+    - nrpe
+    - xinetd
+    - configure

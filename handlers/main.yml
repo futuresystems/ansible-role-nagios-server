@@ -4,3 +4,8 @@
   service:
     name: apache2
     state: restarted
+
+- name: restart xinetd
+  service:
+    name: xinetd
+    state: restarted
