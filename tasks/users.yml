@@ -1,0 +1,26 @@
+---
+
+- name: users | add nagios group
+  group:
+    name: "{{ nagios_server_group }}"
+    state: present
+  tags:
+    - nagios
+    - users
+
+- name: users | add nagios user
+  user:
+    name: "{{ nagios_server_user }}"
+    groups: "{{ nagios_server_group }}"
+    state: present
+  tags:
+    - nagios
+    - users
+
+- name: users | add www-data to nagios group
+  user:
+    name: www-data
+    groups: "{{ nagios_server_group }}"
+  tags:
+    - nagios
+    - users
