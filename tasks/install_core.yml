@@ -6,6 +6,10 @@
     url: "{{ nagios_server_core_src_url }}"
     dest: "{{ __nagios_server_core_src_tarball_name }}"
     sha256sum: "{{ nagios_server_core_src_sha256 }}"
+  tags:
+    - nagios
+    - core
+    - fetch
 
 - name: core | extract
   sudo: no
@@ -13,6 +17,10 @@
     tar xf {{ __nagios_server_core_src_tarball_name }}
   args:
     creates: "{{ __nagios_server_core_src_dir }}"
+  tags:
+    - nagios
+    - core
+    - extrace
 
 - name: core | configure
   sudo: no
@@ -22,12 +30,20 @@
       --with-command-group={{ nagios_server_group }}
   args:
     chdir: "{{ __nagios_server_core_src_dir }}"
+  tags:
+    - nagios
+    - core
+    - configure
 
 - name: core | build
   sudo: no
   command: make all
   args:
     chdir: "{{ __nagios_server_core_src_dir }}"
+  tags:
+    - nagios
+    - core
+    - build
 
 - name: core | install
   command: "make {{ item }}"
@@ -38,6 +54,10 @@
     - install-commandmode
     - install-init
     - install-config
+  tags:
+    - nagios
+    - core
+    - install
 
 - name: core | install-webconf
   command: >-
@@ -49,3 +69,7 @@
   args:
     chdir: "{{ __nagios_server_core_src_dir }}"
   notify: restart apache
+  tags:
+    - nagios
+    - core
+    - install
