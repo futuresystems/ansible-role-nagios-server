@@ -1,0 +1,16 @@
+---
+
+nagios_server_user: nagios
+nagios_server_group: nagcmd
+
+nagios_server_core_src_url:
+  "https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.1.1.tar.gz"
+nagios_server_core_src_sha256:
+  986c93476b0fee2b2feb7a29ccf857cc691bed7ca4e004a5361ba11f467b0401
+
+__nagios_server_core_src_tarball_name:
+  "{{ ansible_env.PWD }}/{{ nagios_server_core_src_url | basename }}"
+__nagios_server_core_src_dir:
+  "{{ __nagios_server_core_src_tarball_name.rstrip('.tar.gz') }}"
+
+nagios_server_core_build_directory: nagios_build
