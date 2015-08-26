@@ -48,5 +48,4 @@
       {{ nagios_server_core_webconf_path }}
   args:
     chdir: "{{ __nagios_server_core_src_dir }}"
-    creates: "{{ nagios_server_core_webconf_path }}"
   notify: restart apache
