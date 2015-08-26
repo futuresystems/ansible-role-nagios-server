@@ -1,0 +1,52 @@
+---
+
+- name: install | fetch src
+  sudo: no
+  get_url:
+    url: "{{ nagios_server_core_src_url }}"
+    dest: "{{ __nagios_server_core_src_tarball_name }}"
+    sha256sum: "{{ nagios_server_core_src_sha256 }}"
+
+- name: install | extract
+  sudo: no
+  command: >-
+    tar xf {{ __nagios_server_core_src_tarball_name }}
+  args:
+    creates: "{{ __nagios_server_core_src_dir }}"
+
+- name: install | configure
+  sudo: no
+  command: >-
+    ./configure \
+      --with-nagios-group={{ nagios_server_user }} \
+      --with-command-group={{ nagios_server_group }}
+  args:
+    chdir: "{{ __nagios_server_core_src_dir }}"
+
+- name: install | build
+  sudo: no
+  command: make all
+  args:
+    chdir: "{{ __nagios_server_core_src_dir }}"
+
+- name: install | nagios
+  command: "make {{ item }}"
+  args:
+    chdir: "{{ __nagios_server_core_src_dir }}"
+  with_items:
+    - install
+    - install-commandmode
+    - install-init
+    - install-config
+
+- name: install | webconf
+  command: >-
+    /usr/bin/install \
+      -c \
+      -m 644 \
+      sample-config/httpd.conf \
+      {{ nagios_server_core_webconf_path }}
+  args:
+    chdir: "{{ __nagios_server_core_src_dir }}"
+    creates: "{{ nagios_server_core_webconf_path }}"
+  notify: restart apache
