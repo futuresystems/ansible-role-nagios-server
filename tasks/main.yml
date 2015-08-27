@@ -1,0 +1,9 @@
+---
+
+- include: users.yml
+- include: packages.yml
+- include: install_core.yml
+- include: install_plugins.yml
+- include: install_nrpe.yml
+- include: configure_nagios.yml
+- include: configure_server.yml
