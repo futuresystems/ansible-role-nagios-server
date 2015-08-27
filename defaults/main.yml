@@ -1,7 +1,17 @@
 ---
 
-#section: network
+#section: configuration
 nagios_server_address: "{{ ansible_default_ipv4.address }}"
+nagios_server_email: nagios@localhost
+nagios_server_web_admin_name: nagiosadmin
+nagios_server_web_admin_password: nagiosadmin
+__nagios_server_web_admin_password_file: /usr/local/nagios/etc/htpasswd.users
+__nagios_server_nagios_cfg: /usr/local/nagios/etc/nagios.cfg
+__nagios_server_contacts_cfg: /usr/local/nagios/etc/objects/contacts.cfg
+__nagios_server_servers_path: /usr/local/nagios/etc/servers
+__nagios_server_commands_path: /usr/local/nagios/etc/commands.d
+nagios_server_additional_commands:
+  - check_nrpe.cfg
 
 #section: users
 nagios_server_user: nagios
@@ -44,3 +54,5 @@ __nagios_server_nrpe_src_dir:
   "{{ __nagios_server_nrpe_src_tarball_name.rstrip('.tar.gz') }}"
 
 nagios_server_nrpe_xinetd_conf: /etc/xinetd.d/nrpe
+
+nagios_server_use_check_nrpe: yes
