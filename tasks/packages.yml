@@ -6,13 +6,17 @@
     state: latest
   with_items:
     - apache2
+    - apache2-utils
+    - libapache2-mod-php5
+    - php5-cgi
+    - php5-gd
     - build-essential
     - libgd2-xpm-dev
     - openssl
     - libssl-dev
     - xinetd
-    - apache2-utils
     - unzip
+    - python-passlib
   tags:
     - nagios
     - install
