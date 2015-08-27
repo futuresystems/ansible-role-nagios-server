@@ -9,3 +9,8 @@
   service:
     name: xinetd
     state: restarted
+
+- name: start nagios
+  service:
+    name: nagios
+    state: started

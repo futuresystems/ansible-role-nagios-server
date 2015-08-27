@@ -1,0 +1,34 @@
+---
+
+- name: server | apache | enable modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rewrite
+    - cgi
+  notify:
+    - start nagios
+    - restart apache
+  tags:
+    - nagios
+    - server
+    - apache
+    - config
+
+- name: server | apache | create admin user
+  htpasswd:
+    name: "{{ nagios_server_web_admin_name }}"
+    password: "{{ nagios_server_web_admin_password }}"
+    path: "{{ __nagios_server_web_admin_password_file }}"
+    state: present
+  tags:
+    - nagios
+    - server
+    - apache
+    - config
+
+- name: server | apache | enable site
+  command: a2ensite nagios
+  args:
+    creates: /etc/apache2/sites-enabled/nagios.conf
