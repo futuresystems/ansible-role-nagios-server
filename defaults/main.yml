@@ -10,6 +10,8 @@ __nagios_server_nagios_cfg: /usr/local/nagios/etc/nagios.cfg
 __nagios_server_contacts_cfg: /usr/local/nagios/etc/objects/contacts.cfg
 __nagios_server_servers_path: /usr/local/nagios/etc/servers
 __nagios_server_commands_path: /usr/local/nagios/etc/commands.d
+__nagios_server_hostgroups_path: /usr/local/nagios/etc/hostgroups.d
+__nagios_server_services_path: /usr/local/nagios/etc/services.d
 nagios_server_additional_commands:
   - check_nrpe.cfg
 

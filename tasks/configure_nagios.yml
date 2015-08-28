@@ -1,40 +1,37 @@
 ---
 
-- name: configure | server
+- name: configure | ensure cfg_dirs exist
+  file:
+    path: "{{ item }}"
+    owner: "{{ nagios_server_user }}"
+    group: "{{ nagios_server_user }}"
+    mode: 0775
+    state: directory
+  with_items:
+    - "{{ __nagios_server_servers_path }}"
+    - "{{ __nagios_server_commands_path }}"
+    - "{{ __nagios_server_hostgroups_path }}"
+    - "{{ __nagios_server_services_path }}"
+  tags:
+    - nagios
+    - config
+    - server
+
+- name: configure | load from cfg_dirs
   lineinfile:
     dest: "{{ __nagios_server_nagios_cfg }}"
-    backrefs: yes
-    regexp: '#+(cfg_dir=/usr/local/nagios/etc/servers)[ \t]*'
-    line: '\1'
+    insertafter: 'cfg_file=(/[a-zA-Z0-9-_\.]+)+/templates.cfg'
+    line: 'cfg_dir={{ item }}'
+    state: present
+  with_items:
+    - "{{ __nagios_server_servers_path }}"
+    - "{{ __nagios_server_commands_path }}"
+    - "{{ __nagios_server_hostgroups_path }}"
+    - "{{ __nagios_server_services_path }}"
   tags:
     - nagios
     - config
     - server
-
-- name: configure | ensure server dir exists
-  file:
-    path: "{{ __nagios_server_servers_path }}"
-    state: directory
-    owner: "{{ nagios_server_user }}"
-    group: "{{ nagios_server_user }}"
-    mode: 0775
-  tags:
-    - nagios
-    - config
-    - server
-
-- name: configure | ensure commands dir exits
-  file:
-    path: "{{ __nagios_server_commands_path }}"
-    state: directory
-    owner: "{{ nagios_server_user }}"
-    group: "{{ nagios_server_user }}"
-    mode: 0775
-  tags:
-    - nagios
-    - config
-    - server
-
 
 - name: configure | add commands
   copy:
@@ -49,17 +46,6 @@
     - config
     - server
     - check_nrpe
-
-- name: configure | include commands.d/*.cfg
-  lineinfile:
-    dest: "{{ __nagios_server_nagios_cfg }}"
-    insertafter: 'cfg_file=(/[a-zA-Z0-9-_\.]+)+/templates.cfg'
-    line: 'cfg_dir={{ __nagios_server_commands_path }}'
-    state: present
-  tags:
-    - nagios
-    - config
-    - server
 
 - name: configure | contacts
   template:
