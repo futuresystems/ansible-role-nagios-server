@@ -1,0 +1,37 @@
+* ansible-role-nagios-server
+
+This is an ansbile role to install a Nagios controller node.
+See the [[https://github.com/futuresystems/ansible-role-nagios-config][nagios-config]] and [[https://github.com/futuresystems/ansible-role-nagios-client][nagios-client]] roles for configure the controller and clients.
+
+Supported/Tested:
+
+- Nagios 4.1.1 installed from source
+- Ubuntu 14.04 as deployment node
+
+* Variables
+
+The following variables are relevant when including this role.
+*NOTE*: prefix the name of this role to the variable: (=address= should be =ansible_server_address=)
+
+| variable              | default                        | type       | description                                      |
+|-----------------------+--------------------------------+------------+--------------------------------------------------|
+| =address=             | =ansible_default_ipv4.address= | /string/   | IP address to bind to                            |
+| =email=               | =nagios@localhost=             | /string/   | Email address                                    |
+| =web_admin_name=      | =nagiosadmin=                  | /string/   | Login name for the web portal                    |
+| =web_admin_password=  | =nagiosadmin=                  | /string/   | Password for the web portal (*CHANGE THIS*)      |
+| =additional_commands= | =[check_nrpe.cfg]=             | /[string]/ | Extra commands (provied by this role) to include |
+
+
+* Example Usage
+
+#+BEGIN_SRC yaml
+---
+
+- hosts: nagios-01
+  roles:
+
+    - role: nagios_server
+
+      nagios_server_web_admin_password: "{{ secret.nagios.web_admin_password }}"
+      nagios_server_address: "{{ global.iface.internal.ipv4.address }}"
+#+END_SRC
