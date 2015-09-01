@@ -1,0 +1,6 @@
+---
+
+- hosts: all
+  roles:
+
+    - role: nagios_server
