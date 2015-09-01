@@ -1,5 +1,8 @@
 ---
 
+- name: packages | update apt cache
+  apt: update_cache=yes
+
 - name: packages | install
   apt:
     pkg: "{{ item }}"
